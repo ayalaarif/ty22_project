@@ -1,4 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+
 
 // reactstrap components
 import {
@@ -13,7 +18,8 @@ import {
   InputGroupText,
   InputGroup,
   Container,
-  Col
+  Col,
+  Alert
 } from "reactstrap";
 
 // core components
@@ -34,9 +40,39 @@ function LoginPage() {
       document.body.classList.remove("sidebar-collapse");
     };
   }, []);
+
+  const [email, setEmail] = React.useState("");
+const [password, setPassword] = React.useState("");
+const [alertSuccess, setAlertSuccess] = React.useState(false);
+const [alertError, setAlertError] = React.useState(false);
+const [errorMessage, setErrorMessage] = React.useState("");
+
+const navigate = useNavigate();
+
+const handleLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post("http://localhost:3001/api/login", {
+      email,
+      password
+    });
+   
+    localStorage.setItem("token", res.data.token); // facultatif
+    setAlertSuccess(true);
+     setTimeout(() => {
+      navigate("/index");
+     }, 1500);
+  } catch (err) {
+    setErrorMessage(err.response?.data?.message || "Erreur de connexion");
+    setAlertError(true);
+
+  }
+};
+
+
   return (
     <>
-      <ExamplesNavbar />
+      {/* <ExamplesNavbar /> */}
       <div className="page-header clear-filter" filter-color="blue">
         <div
           className="page-header-image"
@@ -50,13 +86,48 @@ function LoginPage() {
               <Card className="card-login card-plain">
                 <Form action="" className="form" method="">
                   <CardHeader className="text-center">
-                    <div className="logo-container">
-                      <img
+                    {/* <div className="logo-container"> */}
+                      {/* <img
                         alt="..."
                         src={require("assets/img/now-logo.png")}
-                      ></img>
-                    </div>
+                      ></img> */}
+                      <div class="text-center card-header">
+                        <h3 class="title-up card-title">Connexion</h3>
+                      </div>
+                    {/* </div> */}
                   </CardHeader>
+                  <div className="section section-notifications">
+                  {/* ✅ Notification succès */}
+<Alert color="success" isOpen={alertSuccess}>
+  <Container>
+    <div className="alert-icon">
+      <i className="now-ui-icons ui-2_like"></i>
+    </div>
+    <strong>Succès !</strong> Opération réussie.
+    <button type="button" className="close" onClick={() => setAlertSuccess(false)}>
+      <span aria-hidden="true">
+        <i className="now-ui-icons ui-1_simple-remove"></i>
+      </span>
+    </button>
+  </Container>
+</Alert>
+
+{/* ❌ Notification erreur */}
+<Alert color="danger" isOpen={alertError}>
+  <Container>
+    <div className="alert-icon">
+      <i className="now-ui-icons objects_support-17"></i>
+    </div>
+    <strong>Erreur !</strong> {errorMessage}
+    <button type="button" className="close" onClick={() => setAlertError(false)}>
+      <span aria-hidden="true">
+        <i className="now-ui-icons ui-1_simple-remove"></i>
+      </span>
+    </button>
+  </Container>
+</Alert>
+</div>
+
                   <CardBody>
                     <InputGroup
                       className={
@@ -70,8 +141,10 @@ function LoginPage() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
-                        placeholder="First Name..."
+                        placeholder="Email..."
                         type="text"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         onFocus={() => setFirstFocus(true)}
                         onBlur={() => setFirstFocus(false)}
                       ></Input>
@@ -88,8 +161,10 @@ function LoginPage() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
-                        placeholder="Last Name..."
-                        type="text"
+                        placeholder="Mot de passe...."
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         onFocus={() => setLastFocus(true)}
                         onBlur={() => setLastFocus(false)}
                       ></Input>
@@ -101,20 +176,17 @@ function LoginPage() {
                       className="btn-round"
                       color="info"
                       href="#pablo"
-                      onClick={(e) => e.preventDefault()}
+                      onClick={handleLogin}
                       size="lg"
                     >
-                      Get Started
+                      Se connecter
                     </Button>
                     <div className="pull-left">
                       <h6>
-                        <a
-                          className="link"
-                          href="#pablo"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          Create Account
-                        </a>
+                      
+                          <Link className="link" to="/signup"> Créer un compte </Link>
+                         
+                     
                       </h6>
                     </div>
                     <div className="pull-right">
@@ -124,7 +196,7 @@ function LoginPage() {
                           href="#pablo"
                           onClick={(e) => e.preventDefault()}
                         >
-                          Need Help?
+                          Mot de passe oublié?
                         </a>
                       </h6>
                     </div>
@@ -134,7 +206,7 @@ function LoginPage() {
             </Col>
           </Container>
         </div>
-        <TransparentFooter />
+        {/* <TransparentFooter /> */}
       </div>
     </>
   );
