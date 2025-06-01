@@ -1,44 +1,29 @@
-import React from "react";
-
-// reactstrap components
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Row,
   Col,
   Carousel,
   CarouselItem,
-  CarouselIndicators
+  CarouselIndicators,
 } from "reactstrap";
-
-// core components
-
-const items = [
-  {
-    src: require("assets/img/bg1.jpg"),
-    altText: "Nature, United States",
-    caption: "Nature, United States"
-  },
-  {
-    src: require("assets/img/bg3.jpg"),
-    altText: "Somewhere Beyond, United States",
-    caption: "Somewhere Beyond, United States"
-  },
-  {
-    src: require("assets/img/bg4.jpg"),
-    altText: "Yellowstone National Park, United States",
-    caption: "Yellowstone National Park, United States"
-  }
-];
+import axios from "axios";
 
 function CarouselSection() {
-  const [activeIndex, setActiveIndex] = React.useState(0);
-  const [animating, setAnimating] = React.useState(false);
-  const onExiting = () => {
-    setAnimating(true);
-  };
-  const onExited = () => {
-    setAnimating(false);
-  };
+  const [items, setItems] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [animating, setAnimating] = useState(false);
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/api/AllPosts")  
+      .then(res => {
+        setItems(res.data);
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  const onExiting = () => setAnimating(true);
+  const onExited = () => setAnimating(false);
   const next = () => {
     if (animating) return;
     const nextIndex = activeIndex === items.length - 1 ? 0 : activeIndex + 1;
@@ -53,69 +38,64 @@ function CarouselSection() {
     if (animating) return;
     setActiveIndex(newIndex);
   };
+
   return (
-    <>
-      <div className="section" id="carousel">
-        <Container>
-          <div className="title">
-            <h4>Carousel</h4>
-          </div>
-          <Row className="justify-content-center">
-            <Col lg="8" md="12">
-              <Carousel
+    <div className="section" id="carousel">
+      <Container>
+        <div className="title">
+          <h4>Nos professionnels et artisans</h4>
+        </div>
+        <Row className="justify-content-center">
+          <Col lg="8" md="12">
+            <Carousel activeIndex={activeIndex} next={next} previous={previous}>
+              <CarouselIndicators
+                items={items}
                 activeIndex={activeIndex}
-                next={next}
-                previous={previous}
+                onClickHandler={goToIndex}
+              />
+              {items.map((item, index) => (
+                <CarouselItem
+                  onExiting={onExiting}
+                  onExited={onExited}
+                  key={item._id}
+                >
+                  <img
+                    src={`${item.image}`} 
+                    alt={item.description}
+                    style={{ width: "100%", height: "500px", objectFit: "cover" }}
+                  />
+                  <div className="carousel-caption d-none d-md-block">
+                    <h5>{item.description}</h5>
+                  </div>
+                </CarouselItem>
+              ))}
+              <a
+                className="carousel-control-prev"
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  previous();
+                }}
+                role="button"
               >
-                <CarouselIndicators
-                  items={items}
-                  activeIndex={activeIndex}
-                  onClickHandler={goToIndex}
-                />
-                {items.map((item) => {
-                  return (
-                    <CarouselItem
-                      onExiting={onExiting}
-                      onExited={onExited}
-                      key={item.src}
-                    >
-                      <img src={item.src} alt={item.altText} />
-                      <div className="carousel-caption d-none d-md-block">
-                        <h5>{item.caption}</h5>
-                      </div>
-                    </CarouselItem>
-                  );
-                })}
-                <a
-                  className="carousel-control-prev"
-                  data-slide="prev"
-                  href="#pablo"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    previous();
-                  }}
-                  role="button"
-                >
-                  <i className="now-ui-icons arrows-1_minimal-left"></i>
-                </a>
-                <a
-                  className="carousel-control-next"
-                  data-slide="next"
-                  href="#pablo"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    next();
-                  }}
-                  role="button"
-                >
-                  <i className="now-ui-icons arrows-1_minimal-right"></i>
-                </a>
-              </Carousel>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    </>
+                <i className="now-ui-icons arrows-1_minimal-left"></i>
+              </a>
+              <a
+                className="carousel-control-next"
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  next();
+                }}
+                role="button"
+              >
+                <i className="now-ui-icons arrows-1_minimal-right"></i>
+              </a>
+            </Carousel>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
 

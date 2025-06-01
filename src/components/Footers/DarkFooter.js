@@ -42,14 +42,14 @@ function DarkFooter() {
             href="https://www.invisionapp.com?ref=nukr-dark-footer"
             target="_blank"
           >
-            Invision
+            UTBM's students
           </a>
           . Coded by{" "}
           <a
             href="https://www.creative-tim.com?ref=nukr-dark-footer"
             target="_blank"
           >
-            Creative Tim
+            TY22 team
           </a>
           .
         </div>

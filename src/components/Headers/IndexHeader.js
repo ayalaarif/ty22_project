@@ -1,69 +1,85 @@
-/*eslint-disable*/
 import React from "react";
-
-// reactstrap components
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 import { Container } from "reactstrap";
-// core components
 
-function IndexHeader() {
+// Import du SearchBar
+import SearchBar from "components/SearchBar"; // Assurez-vous que ce chemin est correct selon votre structure de projet.
+
+function IndexHeader({ onSearch }) {
   let pageHeader = React.createRef();
 
   React.useEffect(() => {
+    // Mettre à jour le scroll uniquement pour des largeurs d'écran spécifiques
     if (window.innerWidth > 991) {
       const updateScroll = () => {
-        let windowScrollTop = window.pageYOffset / 3;
-        pageHeader.current.style.transform =
-          "translate3d(0," + windowScrollTop + "px,0)";
+        if (pageHeader.current) {  // Vérification que la référence existe avant d'utiliser
+          let windowScrollTop = window.pageYOffset / 3;
+          pageHeader.current.style.transform =
+            "translate3d(0," + windowScrollTop + "px,0)";
+        }
       };
+
       window.addEventListener("scroll", updateScroll);
-      return function cleanup() {
+      return () => {
         window.removeEventListener("scroll", updateScroll);
       };
     }
-  });
+  }, []);  // Ajouter un tableau de dépendances vide pour ne l'exécuter qu'une fois
+
+  const images = [
+    require("assets/img/architecte.jpg"),
+    require("assets/img/nutritionniste.jpg"),
+    require("assets/img/patissier.jpg"),
+    require("assets/img/menuisier.jpg")
+  ];
+
+  const settings = {
+    autoplay: true,
+    infinite: true,
+    speed: 2000,
+    autoplaySpeed: 5000,
+    fade: true,
+    arrows: false,
+    dots: false,
+    pauseOnHover: false
+  };
 
   return (
     <>
       <div className="page-header clear-filter" filter-color="blue">
-        <div
-          className="page-header-image"
-          style={{
-            backgroundImage: "url(" + require("assets/img/header.jpg") + ")"
-          }}
-          ref={pageHeader}
-        ></div>
+        <div className="page-header-image" ref={pageHeader}>
+          <Slider {...settings}>
+            {images.map((img, index) => (
+              <div key={index}>
+                <div
+                  style={{
+                    height: "100vh",
+                    backgroundImage: `url(${img})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
+                  }}
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
+
         <Container>
           <div className="content-center brand">
             <img
               alt="..."
               className="n-logo"
               src={require("assets/img/now-logo.png")}
-            ></img>
-            <h1 className="h1-seo">Now UI Kit.</h1>
-            <h3>A beautiful Bootstrap 4 UI kit. Yours free.</h3>
+            />
+            <h3>Là où les pros se montrent et les clients trouvent.</h3>
           </div>
-          <h6 className="category category-absolute">
-            Designed by{" "}
-            <a href="http://invisionapp.com/?ref=creativetim" target="_blank">
-              <img
-                alt="..."
-                className="invision-logo"
-                src={require("assets/img/invision-white-slim.png")}
-              ></img>
-            </a>
-            . Coded by{" "}
-            <a
-              href="https://www.creative-tim.com?ref=nukr-index-header"
-              target="_blank"
-            >
-              <img
-                alt="..."
-                className="creative-tim-logo"
-                src={require("assets/img/creative-tim-white-slim2.png")}
-              ></img>
-            </a>
-            .
-          </h6>
+
+          {/* Intégration du SearchBar juste après le logo et le slogan */}
+          <div className="search-bar-container">
+          <SearchBar onSearch={onSearch} />
+          </div>
         </Container>
       </div>
     </>

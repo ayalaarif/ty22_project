@@ -22,9 +22,6 @@ import {
   Alert
 } from "reactstrap";
 
-// core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
-import TransparentFooter from "components/Footers/TransparentFooter.js";
 
 function LoginPage() {
   const [firstFocus, setFirstFocus] = React.useState(false);
@@ -41,7 +38,7 @@ function LoginPage() {
     };
   }, []);
 
-  const [email, setEmail] = React.useState("");
+const [email, setEmail] = React.useState("");
 const [password, setPassword] = React.useState("");
 const [alertSuccess, setAlertSuccess] = React.useState(false);
 const [alertError, setAlertError] = React.useState(false);
