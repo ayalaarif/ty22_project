@@ -265,7 +265,7 @@ const handleSignUp = async (e) => {
                     
                     <div className="text-center">
                       <h6>
-                        <Link className="link" to="/login-page"> Vous avez déjà un compte ? </Link>
+                        <Link className="link" to="/login"> Vous avez déjà un compte ? </Link>
                          
                        
                       </h6>

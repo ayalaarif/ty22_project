@@ -70,15 +70,23 @@ function Index() {
           )}
 
 
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center",marginTop:"10%" }}>
+          <div style={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginTop: "5%",
+    gap: "20px"
+  }}>
             {results.map((prest, idx) => (
               <PrestataireCard
                 key={idx}
+                id={prest.id}
                 nom={prest.nom}
                 prenom={prest.prenom}
                 profil={prest.profil}
-                description={prest.description}
+               description={prest.description}
               />
+
             ))}
           </div>
 

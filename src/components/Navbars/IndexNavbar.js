@@ -55,7 +55,7 @@ function IndexNavbar() {
               target="_blank"
               id="navbar-brand"
             >
-              Nexora
+              SiteWeb
             </NavbarBrand>
             <button
               className="navbar-toggler"

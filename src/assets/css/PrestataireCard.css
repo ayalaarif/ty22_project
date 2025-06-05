@@ -1,4 +1,4 @@
-.prestataire-card {
+/* .prestataire-card {
     display: flex;
     align-items: flex-start;
     background-color: white;
@@ -7,15 +7,39 @@
     padding: 1rem;
     margin-bottom: 1rem;
     max-width: 600px;
-  }
+  } */
+  .prestataire-card {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.2rem 2rem;
+  margin-bottom: 1rem;
+  width: 800px;        /* ✅ largeur fixe */
+  max-width: 90vw;     /* ✅ responsive */
+  transition: transform 0.2s ease;
+}
+
+.prestataire-card:hover {
+  transform: translateY(-4px); /* petit effet sympa */
+}
   
-  .prestataire-card img {
+  /* .prestataire-card img {
     width: 80px;
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 1rem;
-  }
+  } */
+
+  .prestataire-card img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 1.5rem;
+}
   
   .prestataire-info {
     display: flex;

@@ -5,8 +5,9 @@ import { Container } from "reactstrap";
 
 // core components
 
-function ProfilePageHeader() {
+function ProfilePageHeader({ prestataire }) {
   let pageHeader = React.createRef();
+
 
   React.useEffect(() => {
     if (window.innerWidth > 991) {
@@ -26,21 +27,30 @@ function ProfilePageHeader() {
       <div
         className="page-header clear-filter page-header-small"
         filter-color="blue"
+        
       >
         <div
           className="page-header-image"
           style={{
-            backgroundImage: "url(" + require("assets/img/bg5.jpg") + ")"
+            backgroundImage: "url(" + require("assets/img/login.png") + ")",
+            
           }}
           ref={pageHeader}
         ></div>
         <Container>
           <div className="photo-container">
-            <img alt="..." src={require("assets/img/ryan.jpg")}></img>
+            <img 
+            style={{
+    width: 160,
+    height: 160,
+    objectFit: "cover",
+    objectPosition: "center",
+
+  }} alt="..." src={`${prestataire.profil}`}></img>
           </div>
-          <h3 className="title">Ryan Scheinder</h3>
-          <p className="category">Photographer</p>
-          <div className="content">
+          <h3 className="title">{prestataire.prenom} {prestataire.nom}</h3>
+          <p className="category">{prestataire.description}</p>
+          {/* <div className="content">
             <div className="social-description">
               <h2>26</h2>
               <p>Comments</p>
@@ -53,7 +63,7 @@ function ProfilePageHeader() {
               <h2>48</h2>
               <p>Bookmarks</p>
             </div>
-          </div>
+          </div> */}
         </Container>
       </div>
     </>

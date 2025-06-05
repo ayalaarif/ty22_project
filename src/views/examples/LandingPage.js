@@ -1,4 +1,6 @@
-import React from "react";
+
+import React,{ useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -9,38 +11,93 @@ import {
   InputGroup,
   Container,
   Row,
-  Col
+  Col,
+   NavItem,
+  NavLink,
+  Nav,
+  TabContent,
+  TabPane,
+   UncontrolledTooltip
 } from "reactstrap";
 
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import LandingPageHeader from "components/Headers/LandingPageHeader.js";
+import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DefaultFooter from "components/Footers/DefaultFooter.js";
 
 function LandingPage() {
+  const { id } = useParams();
+  const [prestataire, setPrestataire] = useState(null);
   const [firstFocus, setFirstFocus] = React.useState(false);
   const [lastFocus, setLastFocus] = React.useState(false);
+  const [pills, setPills] = React.useState("2");
   React.useEffect(() => {
+     document.body.classList.add("profile-page");
     document.body.classList.add("landing-page");
     document.body.classList.add("sidebar-collapse");
     document.documentElement.classList.remove("nav-open");
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
+
+    // Récupération des données du prestataire
+    fetch(`http://localhost:3001/api/profilPrestataire/${id}`)
+      .then((res) => res.json())
+      .then((data) => setPrestataire(data))
+      .catch((err) => console.error("Erreur de chargement du profil :", err));
+
+
     return function cleanup() {
+       document.body.classList.remove("profile-page");
       document.body.classList.remove("landing-page");
       document.body.classList.remove("sidebar-collapse");
     };
-  }, []);
+  }, [id]);
+
+   if (!prestataire) {
+    return <div style={{ textAlign: "center", marginTop: "100px" }}>Chargement...</div>;
+  }
+
   return (
     <>
       <ExamplesNavbar />
       <div className="wrapper">
-        <LandingPageHeader />
+        <ProfilePageHeader
+        prestataire={prestataire} 
+         />
         <div className="section section-about-us">
           <Container>
+            <div className="button-container">
+                                  <Button className="btn-round" color="info" size="lg">
+                                    Donner un avis 
+                                  </Button>
+                                  <Button
+                                    className="btn-round btn-icon"
+                                    color="default"
+                                    id="tooltip515203352"
+                                    size="lg"
+                                  >
+                                    {/* <i className="fab fa-twitter" ></i> */}
+                                     <i className="now-ui-icons ui-2_favourite-28"></i>
+                                  </Button>
+                                  <UncontrolledTooltip delay={0} target="tooltip515203352">
+                                    Ajouter ce professionnel aux favoris 
+                                  </UncontrolledTooltip>
+                                  <Button
+                                    className="btn-round btn-icon"
+                                    color="default"
+                                    id="tooltip340339231"
+                                    size="lg"
+                                  >
+                                    <i className="fab fa-instagram"></i>
+                                  </Button>
+                                  <UncontrolledTooltip delay={0} target="tooltip340339231">
+                                    Follow me on Instagram
+                                  </UncontrolledTooltip>
+                      </div>
             <Row>
               <Col className="ml-auto mr-auto text-center" md="8">
-                <h2 className="title">Who we are?</h2>
+                <h2 className="title">Qui suis-je?</h2>
                 <h5 className="description">
                   According to the National Oceanic and Atmospheric
                   Administration, Ted, Scambos, NSIDClead scentist, puts the
@@ -58,22 +115,20 @@ function LandingPage() {
                     className="image-container image-left"
                     style={{
                       backgroundImage:
-                        "url(" + require("assets/img/login.jpg") + ")"
+                        "url(" + require("assets/img/login.png") + ")"
                     }}
                   >
                     <p className="blockquote blockquote-info">
-                      "Over the span of the satellite record, Arctic sea ice has
-                      been declining significantly, while sea ice in the
-                      Antarctichas increased very slightly" <br></br>
-                      <br></br>
-                      <small>-NOAA</small>
+                       Spécialité : {prestataire.specialite} <br />
+                      Ville : {prestataire.ville}
                     </p>
                   </div>
                   <div
                     className="image-container"
                     style={{
                       backgroundImage:
-                        "url(" + require("assets/img/bg3.jpg") + ")"
+                       
+                        `url(${prestataire.posts[0].image || "/Profils/default.jpg"})`
                     }}
                   ></div>
                 </Col>
@@ -82,48 +137,177 @@ function LandingPage() {
                     className="image-container image-right"
                     style={{
                       backgroundImage:
-                        "url(" + require("assets/img/bg1.jpg") + ")"
+                         `url(${prestataire.profil || "/Profils/default.jpg"})`
                     }}
                   ></div>
                   <h3>
-                    So what does the new record for the lowest level of winter
-                    ice actually mean
+                   À propos
                   </h3>
                   <p>
-                    The Arctic Ocean freezes every winter and much of the
-                    sea-ice then thaws every summer, and that process will
-                    continue whatever happens with climate change. Even if the
-                    Arctic continues to be one of the fastest-warming regions of
-                    the world, it will always be plunged into bitterly cold
-                    polar dark every winter. And year-by-year, for all kinds of
-                    natural reasons, there’s huge variety of the state of the
-                    ice.
+                    {prestataire.description}
                   </p>
                   <p>
-                    For a start, it does not automatically follow that a record
-                    amount of ice will melt this summer. More important for
-                    determining the size of the annual thaw is the state of the
-                    weather as the midnight sun approaches and temperatures
-                    rise. But over the more than 30 years of satellite records,
-                    scientists have observed a clear pattern of decline,
-                    decade-by-decade.
+                   <strong>Adresse :</strong> {prestataire.adresse}
                   </p>
                   <p>
-                    The Arctic Ocean freezes every winter and much of the
-                    sea-ice then thaws every summer, and that process will
-                    continue whatever happens with climate change. Even if the
-                    Arctic continues to be one of the fastest-warming regions of
-                    the world, it will always be plunged into bitterly cold
-                    polar dark every winter. And year-by-year, for all kinds of
-                    natural reasons, there’s huge variety of the state of the
-                    ice.
+                    <strong>Code postal :</strong> {prestataire.codePostal}
+                  </p>
+                  <p><strong>Pays :</strong> {prestataire.pays}</p>
+                  <p><strong>Tarif horaire :</strong> {prestataire.tarifHoraire} €</p>
+                  <p><strong>Site web :</strong> <a href={prestataire.siteWeb} target="_blank" rel="noopener noreferrer">{prestataire.siteWeb}</a></p>
+                  <br></br>
+                  <br></br>
+                  <br></br>
+                  <p>
+                    {prestataire.posts[0].description}
                   </p>
                 </Col>
               </Row>
             </div>
+             <Row>
+              <Col className="ml-auto mr-auto" md="6">
+                <h4 className="title text-center">Mon portfolio</h4>
+                <div className="nav-align-center">
+                  <Nav
+                    className="nav-pills-info nav-pills-just-icons"
+                    pills
+                    role="tablist"
+                  >
+                    <NavItem>
+                      <NavLink
+                        className={pills === "1" ? "active" : ""}
+                        href="#pablo"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPills("1");
+                        }}
+                      >
+                        <i className="now-ui-icons design_image"></i>
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={pills === "2" ? "active" : ""}
+                        href="#pablo"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPills("2");
+                        }}
+                      >
+                        <i className="now-ui-icons location_world"></i>
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={pills === "3" ? "active" : ""}
+                        href="#pablo"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPills("3");
+                        }}
+                      >
+                        <i className="now-ui-icons sport_user-run"></i>
+                      </NavLink>
+                    </NavItem>
+                  </Nav>
+                </div>
+              </Col>
+              <TabContent className="gallery" activeTab={"pills" + pills}>
+                <TabPane tabId="pills1">
+                  <Col className="ml-auto mr-auto" md="10">
+                    <Row className="collections">
+                      <Col md="6">
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg1.jpg")}
+                        ></img>
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg3.jpg")}
+                        ></img>
+                      </Col>
+                      <Col md="6">
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg8.jpg")}
+                        ></img>
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg7.jpg")}
+                        ></img>
+                      </Col>
+                    </Row>
+                  </Col>
+                </TabPane>
+                <TabPane tabId="pills2">
+                  <Col className="ml-auto mr-auto" md="10">
+                    <Row className="collections">
+                      <Col md="6">
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg6.jpg")}
+                        ></img>
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg11.jpg")}
+                        ></img>
+                      </Col>
+                      <Col md="6">
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg7.jpg")}
+                        ></img>
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg8.jpg")}
+                        ></img>
+                      </Col>
+                    </Row>
+                  </Col>
+                </TabPane>
+                <TabPane tabId="pills3">
+                  <Col className="ml-auto mr-auto" md="10">
+                    <Row className="collections">
+                      <Col md="6">
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg3.jpg")}
+                        ></img>
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg8.jpg")}
+                        ></img>
+                      </Col>
+                      <Col md="6">
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg7.jpg")}
+                        ></img>
+                        <img
+                          alt="..."
+                          className="img-raised"
+                          src={require("assets/img/bg6.jpg")}
+                        ></img>
+                      </Col>
+                    </Row>
+                  </Col>
+                </TabPane>
+              </TabContent>
+            </Row>
           </Container>
         </div>
-        <div className="section section-team text-center">
+        {/* <div className="section section-team text-center">
           <Container>
             <h2 className="title">Here is our team</h2>
             <div className="team">
@@ -255,11 +439,12 @@ function LandingPage() {
               </Row>
             </div>
           </Container>
-        </div>
+        </div> */}
+        
         <div className="section section-contact-us text-center">
           <Container>
-            <h2 className="title">Want to work with us?</h2>
-            <p className="description">Your project is very important to us.</p>
+            <h2 className="title">Contacter {prestataire.prenom}</h2>
+            <p className="description">Votre projet est important pour nous.</p>
             <Row>
               <Col className="text-center ml-auto mr-auto" lg="6" md="8">
                 <InputGroup
@@ -273,7 +458,7 @@ function LandingPage() {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="First Name..."
+                    placeholder="Nom..."
                     type="text"
                     onFocus={() => setFirstFocus(true)}
                     onBlur={() => setFirstFocus(false)}
@@ -300,7 +485,7 @@ function LandingPage() {
                   <Input
                     cols="80"
                     name="name"
-                    placeholder="Type a message..."
+                    placeholder="Message...."
                     rows="4"
                     type="textarea"
                   ></Input>
@@ -314,7 +499,7 @@ function LandingPage() {
                     onClick={(e) => e.preventDefault()}
                     size="lg"
                   >
-                    Send Message
+                     Envoyer le message
                   </Button>
                 </div>
               </Col>
