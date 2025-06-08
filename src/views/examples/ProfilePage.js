@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 // reactstrap components
 import {
@@ -20,8 +21,16 @@ import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DefaultFooter from "components/Footers/DefaultFooter.js";
 
 function ProfilePage() {
-  const [pills, setPills] = React.useState("2");
+  const [pills, setPills] = React.useState("1");
+  const [userData, setUserData] = useState(null);
+ 
   React.useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      axios.get(`http://localhost:3001/api/user/${userId}`)
+        .then((res) => setUserData(res.data))
+        .catch((err) => console.error(err));
+    }
     document.body.classList.add("profile-page");
     document.body.classList.add("sidebar-collapse");
     document.documentElement.classList.remove("nav-open");
@@ -32,6 +41,11 @@ function ProfilePage() {
       document.body.classList.remove("sidebar-collapse");
     };
   }, []);
+
+  if (!userData) return <p>Chargement...</p>;
+
+  const { user, prestataire } = userData;
+  
   return (
     <>
       <ExamplesNavbar />
