@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Row,
@@ -13,6 +14,7 @@ function CarouselSection() {
   const [items, setItems] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios.get("http://localhost:3001/api/AllPosts")  
@@ -54,20 +56,26 @@ function CarouselSection() {
                 onClickHandler={goToIndex}
               />
               {items.map((item, index) => (
-                <CarouselItem
-                  onExiting={onExiting}
-                  onExited={onExited}
-                  key={item._id}
-                >
-                  <img
-                    src={`${item.image}`} 
-                    alt={item.description}
-                    style={{ width: "100%", height: "500px", objectFit: "cover" }}
-                  />
-                  <div className="carousel-caption d-none d-md-block">
-                    <h5>{item.description}</h5>
-                  </div>
-                </CarouselItem>
+                 <CarouselItem
+    onExiting={onExiting}
+    onExited={onExited}
+    key={item._id}
+   
+    style={{ cursor: "pointer" }}
+  >
+    
+      <img
+  src={item.image}
+  alt={item.description}
+  style={{ width: "100%", height: "500px", objectFit: "cover", cursor: "pointer" }}
+  onClick={() => navigate(`/profilPrestataire/${item.user._id}`)}
+/>
+    
+    <div className="carousel-caption d-none d-md-block">
+      <h5>{item.description}</h5>
+      <p>{item.user.prenom} {item.user.nom}</p>
+    </div>
+  </CarouselItem>
               ))}
               <a
                 className="carousel-control-prev"

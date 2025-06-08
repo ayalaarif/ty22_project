@@ -31,7 +31,9 @@ function LandingPage() {
   const [prestataire, setPrestataire] = useState(null);
   const [firstFocus, setFirstFocus] = React.useState(false);
   const [lastFocus, setLastFocus] = React.useState(false);
-  const [pills, setPills] = React.useState("2");
+ const [pills, setPills] = React.useState("1");
+
+  
   React.useEffect(() => {
      document.body.classList.add("profile-page");
     document.body.classList.add("landing-page");
@@ -39,12 +41,18 @@ function LandingPage() {
     document.documentElement.classList.remove("nav-open");
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
-
+   
     // Récupération des données du prestataire
     fetch(`http://localhost:3001/api/profilPrestataire/${id}`)
       .then((res) => res.json())
-      .then((data) => setPrestataire(data))
+      .then((data) => {
+      setPrestataire(data);
+      if ((data.posts || []).length > 0) {
+        setPills("1"); // active automatiquement la première pill
+      }
+    })
       .catch((err) => console.error("Erreur de chargement du profil :", err));
+
 
 
     return function cleanup() {
@@ -57,7 +65,6 @@ function LandingPage() {
    if (!prestataire) {
     return <div style={{ textAlign: "center", marginTop: "100px" }}>Chargement...</div>;
   }
-
   return (
     <>
       <ExamplesNavbar />
@@ -68,7 +75,7 @@ function LandingPage() {
         <div className="section section-about-us">
           <Container>
             <div className="button-container">
-                                  <Button className="btn-round" color="info" size="lg">
+                                  <Button className="btn-round" color="info" size="lg"  style={{ fontSize: "1rem", padding: "14px 28px" }}>
                                     Donner un avis 
                                   </Button>
                                   <Button
@@ -83,27 +90,13 @@ function LandingPage() {
                                   <UncontrolledTooltip delay={0} target="tooltip515203352">
                                     Ajouter ce professionnel aux favoris 
                                   </UncontrolledTooltip>
-                                  <Button
-                                    className="btn-round btn-icon"
-                                    color="default"
-                                    id="tooltip340339231"
-                                    size="lg"
-                                  >
-                                    <i className="fab fa-instagram"></i>
-                                  </Button>
-                                  <UncontrolledTooltip delay={0} target="tooltip340339231">
-                                    Follow me on Instagram
-                                  </UncontrolledTooltip>
+                                  
                       </div>
             <Row>
               <Col className="ml-auto mr-auto text-center" md="8">
                 <h2 className="title">Qui suis-je?</h2>
                 <h5 className="description">
-                  According to the National Oceanic and Atmospheric
-                  Administration, Ted, Scambos, NSIDClead scentist, puts the
-                  potentially record low maximum sea ice extent tihs year down
-                  to low ice extent in the Pacific and a late drop in ice extent
-                  in the Barents Sea.
+                 {prestataire.description2}
                 </h5>
               </Col>
             </Row>
@@ -123,14 +116,15 @@ function LandingPage() {
                       Ville : {prestataire.ville}
                     </p>
                   </div>
-                  <div
-                    className="image-container"
-                    style={{
-                      backgroundImage:
-                       
-                        `url(${prestataire.posts[0].image || "/Profils/default.jpg"})`
-                    }}
-                  ></div>
+                 {prestataire.posts.length > 0 && (
+  <div
+    className="image-container"
+    style={{
+      backgroundImage: `url(${prestataire.posts[0].image || "/Profils/default.jpg"})`
+    }}
+  ></div>
+)}
+
                 </Col>
                 <Col md="5">
                   <div
@@ -158,153 +152,133 @@ function LandingPage() {
                   <br></br>
                   <br></br>
                   <br></br>
-                  <p>
-                    {prestataire.posts[0].description}
-                  </p>
+                  {prestataire.posts.length > 0 && (
+  <p>{prestataire.posts[0].description}</p>
+)}
                 </Col>
               </Row>
             </div>
-             <Row>
-              <Col className="ml-auto mr-auto" md="6">
-                <h4 className="title text-center">Mon portfolio</h4>
-                <div className="nav-align-center">
-                  <Nav
-                    className="nav-pills-info nav-pills-just-icons"
-                    pills
-                    role="tablist"
-                  >
-                    <NavItem>
-                      <NavLink
-                        className={pills === "1" ? "active" : ""}
-                        href="#pablo"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPills("1");
-                        }}
-                      >
-                        <i className="now-ui-icons design_image"></i>
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={pills === "2" ? "active" : ""}
-                        href="#pablo"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPills("2");
-                        }}
-                      >
-                        <i className="now-ui-icons location_world"></i>
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={pills === "3" ? "active" : ""}
-                        href="#pablo"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPills("3");
-                        }}
-                      >
-                        <i className="now-ui-icons sport_user-run"></i>
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
-                </div>
+            {prestataire.posts && prestataire.posts.length > 0 && (
+  <Row>
+    <Col className="ml-auto mr-auto" md="6">
+      <h4 className="title text-center">Mon portfolio</h4>
+      <div className="nav-align-center">
+        <Nav
+          className="nav-pills-info nav-pills-just-icons"
+          pills
+          role="tablist"
+        >
+          <NavItem>
+            <NavLink
+              className={pills === "1" ? "active" : ""}
+              href="#pablo"
+              onClick={(e) => {
+                e.preventDefault();
+                setPills("1");
+              }}
+            >
+              <i className="now-ui-icons design_image"></i>
+            </NavLink>
+          </NavItem>
+
+          {prestataire.posts.length > 4 && (
+            <NavItem>
+              <NavLink
+                className={pills === "2" ? "active" : ""}
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPills("2");
+                }}
+              >
+                <i className="now-ui-icons location_world"></i>
+              </NavLink>
+            </NavItem>
+          )}
+
+          {prestataire.posts.length > 8 && (
+            <NavItem>
+              <NavLink
+                className={pills === "3" ? "active" : ""}
+                href="#pablo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPills("3");
+                }}
+              >
+                <i className="now-ui-icons sport_user-run"></i>
+              </NavLink>
+            </NavItem>
+          )}
+        </Nav>
+      </div>
+    </Col>
+
+    <TabContent className="gallery" activeTab={"pills" + pills}>
+      {/* pills1 */}
+      <TabPane tabId="pills1">
+        <Col className="ml-auto mr-auto" md="10">
+          <Row className="collections">
+            {prestataire.posts.slice(0, 4).map((post, index) => (
+              <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
+                <img
+                  alt={post.description}
+                  className="img-raised"
+                  src={post.image || "/Profils/default.jpg"}
+                  style={{ width: "100%", height: "auto" }}
+                />
+                <p className="text-center mt-2">{post.description}</p>
               </Col>
-              <TabContent className="gallery" activeTab={"pills" + pills}>
-                <TabPane tabId="pills1">
-                  <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg1.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg3.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
-                      </Col>
-                    </Row>
-                  </Col>
-                </TabPane>
-                <TabPane tabId="pills2">
-                  <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg6.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg11.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
-                      </Col>
-                    </Row>
-                  </Col>
-                </TabPane>
-                <TabPane tabId="pills3">
-                  <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg3.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg6.jpg")}
-                        ></img>
-                      </Col>
-                    </Row>
-                  </Col>
-                </TabPane>
-              </TabContent>
+            ))}
+          </Row>
+        </Col>
+      </TabPane>
+
+      {/* pills2 */}
+      {prestataire.posts.length > 4 && (
+        <TabPane tabId="pills2">
+          <Col className="ml-auto mr-auto" md="10">
+            <Row className="collections">
+              {prestataire.posts.slice(4, 8).map((post, index) => (
+                <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
+                  <img
+                    alt={post.description}
+                    className="img-raised"
+                    src={post.image || "/Profils/default.jpg"}
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                  <p className="text-center mt-2">{post.description}</p>
+                </Col>
+              ))}
             </Row>
+          </Col>
+        </TabPane>
+      )}
+
+      {/* pills3 */}
+      {prestataire.posts.length > 8 && (
+        <TabPane tabId="pills3">
+          <Col className="ml-auto mr-auto" md="10">
+            <Row className="collections">
+              {prestataire.posts.slice(8).map((post, index) => (
+                <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
+                  <img
+                    alt={post.description}
+                    className="img-raised"
+                    src={post.image || "/Profils/default.jpg"}
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                  <p className="text-center mt-2">{post.description}</p>
+                </Col>
+              ))}
+            </Row>
+          </Col>
+        </TabPane>
+      )}
+    </TabContent>
+  </Row>
+)}
+
           </Container>
         </div>
         {/* <div className="section section-team text-center">
@@ -498,6 +472,7 @@ function LandingPage() {
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
                     size="lg"
+                    style={{ fontSize: "1rem", padding: "14px 28px" }}
                   >
                      Envoyer le message
                   </Button>

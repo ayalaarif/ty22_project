@@ -54,6 +54,7 @@ function IndexNavbar() {
               href="https://demos.creative-tim.com/now-ui-kit-react/#/index?ref=nukr-index-navbar"
               target="_blank"
               id="navbar-brand"
+              style={{ fontSize: "0.8rem"}}
             >
               SiteWeb
             </NavbarBrand>
@@ -74,16 +75,16 @@ function IndexNavbar() {
           <Collapse className="justify-content-end" isOpen={collapseOpen} navbar>
             <Nav navbar>
               <NavItem>
-                <NavLink tag={Link} to="/login">
-                  <i className="now-ui-icons ui-1_lock-circle-open"></i>
-                  <p>Se connecter</p>
-                </NavLink>
+                 <NavLink tag={Link} to="/login" style={{ fontSize: "0.8rem"}}>
+                                                 <i className="now-ui-icons ui-1_lock-circle-open" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
+                                                 <p>Se connecter</p>
+                                               </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to="/signup">
-                  <i className="now-ui-icons ui-1_simple-add"></i>
-                  <p>S'inscrire</p>
-                </NavLink>
+                 <NavLink tag={Link} to="/signup" style={{ fontSize: "0.8rem"}}  >
+                                                  <i className="now-ui-icons ui-1_simple-add" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
+                                                  <p>S'inscrire</p>
+                                                </NavLink>
               </NavItem>
             </Nav>
           </Collapse>

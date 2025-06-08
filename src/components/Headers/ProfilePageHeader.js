@@ -48,7 +48,7 @@ function ProfilePageHeader({ prestataire }) {
 
   }} alt="..." src={`${prestataire.profil}`}></img>
           </div>
-          <h3 className="title">{prestataire.prenom} {prestataire.nom}</h3>
+          <h3 className="title" style={{ fontSize: "1.9em" }}>{prestataire.prenom} {prestataire.nom}</h3>
           <p className="category">{prestataire.description}</p>
           {/* <div className="content">
             <div className="social-description">

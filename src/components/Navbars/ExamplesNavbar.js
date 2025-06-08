@@ -93,11 +93,11 @@ function ExamplesNavbar() {
               target="_blank"
               id="navbar-brand"
             >
-               <NavLink tag={Link} to="/index"> Acceuil</NavLink>
+               <NavLink tag={Link} to="/index" style={{ fontSize: "0.8rem"}}> Acceuil</NavLink>
             
             </NavbarBrand>
             <UncontrolledTooltip target="#navbar-brand">
-              Designed by Invision. Coded by Creative Tim
+              Acceuil
             </UncontrolledTooltip>
             <button
               className="navbar-toggler navbar-toggler"
@@ -120,14 +120,14 @@ function ExamplesNavbar() {
           >
             <Nav navbar>
               <NavItem>
-                <NavLink tag={Link} to="/login">
-                                 <i className="now-ui-icons ui-1_lock-circle-open"></i>
+                <NavLink tag={Link} to="/login" style={{ fontSize: "0.8rem"}}>
+                                 <i className="now-ui-icons ui-1_lock-circle-open" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
                                  <p>Se connecter</p>
                                </NavLink>
               </NavItem>
               <NavItem>
-                 <NavLink tag={Link} to="/signup">
-                                  <i className="now-ui-icons ui-1_simple-add"></i>
+                 <NavLink tag={Link} to="/signup" style={{ fontSize: "0.8rem"}}  >
+                                  <i className="now-ui-icons ui-1_simple-add" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
                                   <p>S'inscrire</p>
                                 </NavLink>
               </NavItem>
