@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-
+import { useLocation } from "react-router-dom";
 // Components
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import IndexHeader from "components/Headers/IndexHeader.js";
 import DarkFooter from "components/Footers/DarkFooter.js";
 import PrestataireCard from "./index-sections/PrestataireCard.js";
 import Carousel from "./index-sections/Carousel.js";
-import Examples from "./index-sections/Examples.js";
 import Download from "./index-sections/Download.js";
-
+import NucleoIcons from "./index-sections/NucleoIcons.js";
+import Typography from "./index-sections/Typography.js";
+import Tutorial from "./index-sections/Tutorial.js";
+import Number from "./index-sections/Numbers.js";
 
 function Index() {
   const [results, setResults] = useState([]);
@@ -55,11 +57,20 @@ function Index() {
     }
   };
   
-  
+const [userId, setUserId] = useState(() => localStorage.getItem("userId"));
+const [role, setRole] = useState(() => localStorage.getItem("role"));
+
+const handleLogout = () => {
+  setUserId(null);
+  setRole(null);
+  localStorage.removeItem("userId");
+  localStorage.removeItem("role");
+  localStorage.removeItem("token"); 
+};
 
   return (
     <>
-      <IndexNavbar />
+      <IndexNavbar userId={userId} role={role} onLogout={handleLogout} />
       <div className="wrapper">
       <IndexHeader onSearch={handleSearch} />
       <div className="main">
@@ -71,12 +82,12 @@ function Index() {
 
 
           <div style={{
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    marginTop: "5%",
-    gap: "20px"
-  }}>
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "5%",
+              gap: "20px"
+          }}>
             {results.map((prest, idx) => (
               <PrestataireCard
                 key={idx}
@@ -91,6 +102,21 @@ function Index() {
           </div>
 
           <Carousel />
+          <div id="apropos">
+            <NucleoIcons />
+          </div>
+          <div id="tutorial">
+            <Tutorial />
+          </div>
+          <div id="fonctionnement">
+            <Number />
+          </div>
+          <div id="stats">
+            <Typography />
+          </div>
+          <div id="contact">
+            <Download />
+          </div>
         </div>
         <DarkFooter />
       </div>

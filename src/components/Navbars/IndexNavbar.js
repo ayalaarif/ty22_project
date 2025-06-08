@@ -12,7 +12,7 @@ import {
   Container,
 } from "reactstrap";
 
-function IndexNavbar() {
+function IndexNavbar({ userId, role, onLogout }) {
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [collapseOpen, setCollapseOpen] = React.useState(false);
 
@@ -74,7 +74,44 @@ function IndexNavbar() {
           </div>
           <Collapse className="justify-content-end" isOpen={collapseOpen} navbar>
             <Nav navbar>
+              {/* Liens d'ancrage avec icônes */}
+           
+                <NavItem>
+                <NavLink href="#apropos">
+                  <i className="now-ui-icons ui-2_chat-round"></i>
+                  <p>À propos de nous</p>
+                </NavLink>
+              </NavItem>
               <NavItem>
+                <NavLink href="#contact">
+                  <i className="now-ui-icons ui-1_email-85"></i>
+                  <p>Nous contacter</p>
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="#bests">
+                  <i className="now-ui-icons ui-2_like"></i>
+                  <p>Nos meilleurs prestataires</p>
+                </NavLink>
+              </NavItem>
+
+              {/* Liens existants */}
+              {userId ? (
+                <NavItem>
+                  <NavLink
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onLogout(); // Appelle la fonction de déconnexion
+                    }}
+                  >
+                    <i className="now-ui-icons ui-1_simple-remove"></i>
+                    <p>Se déconnecter</p>
+                  </NavLink>
+                </NavItem>
+              ) : (
+                <>
+                     <NavItem>
                  <NavLink tag={Link} to="/login" style={{ fontSize: "0.8rem"}}>
                                                  <i className="now-ui-icons ui-1_lock-circle-open" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
                                                  <p>Se connecter</p>
@@ -85,7 +122,9 @@ function IndexNavbar() {
                                                   <i className="now-ui-icons ui-1_simple-add" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
                                                   <p>S'inscrire</p>
                                                 </NavLink>
-              </NavItem>
+                                                </NavItem>
+                </>
+              )}
             </Nav>
           </Collapse>
         </Container>
