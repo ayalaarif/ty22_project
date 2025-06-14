@@ -16,7 +16,7 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 
-function ExamplesNavbar() {
+function ExamplesNavbar({ userId, role, onLogout }) {
   const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
   const [collapseOpen, setCollapseOpen] = React.useState(false);
   React.useEffect(() => {
@@ -119,6 +119,33 @@ function ExamplesNavbar() {
             navbar
           >
             <Nav navbar>
+              {userId ? (
+                              <>
+                               <NavItem>
+                               <NavLink tag={Link} to="/profile-page" style={{ fontSize: "0.8rem"}}>
+                                                               <i className="now-ui-icons users_circle-08" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
+                                                               <p>Mon compte</p>
+                                                             </NavLink>
+              
+                              </NavItem>
+              
+                              <NavItem>
+                                <NavLink style={{ fontSize: "0.8rem"}}
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    onLogout(); // Appelle la fonction de déconnexion
+                                  }}
+                                >
+                                  <i style={{ fontSize: "1rem", marginRight: "5px"}} className="now-ui-icons ui-1_simple-remove"></i>
+                                  <p>Se déconnecter</p>
+                                </NavLink>
+                                </NavItem>
+                               
+                              </>
+              
+                            ) : (
+                               <>
               <NavItem>
                 <NavLink tag={Link} to="/login" style={{ fontSize: "0.8rem"}}>
                                  <i className="now-ui-icons ui-1_lock-circle-open" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
@@ -132,7 +159,8 @@ function ExamplesNavbar() {
                                 </NavLink>
               </NavItem>
              
-              
+           </>
+              )}   
             </Nav>
           </Collapse>
         </Container>

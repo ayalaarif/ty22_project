@@ -65,7 +65,7 @@ function CarouselSection() {
   >
     
       <img
-  src={item.image}
+  src={`http://localhost:3001/${item.image}`}
   alt={item.description}
   style={{ width: "100%", height: "500px", objectFit: "cover", cursor: "pointer" }}
   onClick={() => navigate(`/profilPrestataire/${item.user._id}`)}

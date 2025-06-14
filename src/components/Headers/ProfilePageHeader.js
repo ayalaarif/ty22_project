@@ -5,23 +5,30 @@ import { Container } from "reactstrap";
 
 // core components
 
-function ProfilePageHeader({ prestataire }) {
-  let pageHeader = React.createRef();
+function ProfilePageHeader({ user }) {
+ let pageHeader = React.createRef();
 
-
-  React.useEffect(() => {
-    if (window.innerWidth > 991) {
-      const updateScroll = () => {
+React.useEffect(() => {
+  if (window.innerWidth > 991) {
+    const updateScroll = () => {
+      if (pageHeader.current) {
         let windowScrollTop = window.pageYOffset / 3;
         pageHeader.current.style.transform =
           "translate3d(0," + windowScrollTop + "px,0)";
-      };
-      window.addEventListener("scroll", updateScroll);
-      return function cleanup() {
-        window.removeEventListener("scroll", updateScroll);
-      };
-    }
-  });
+      }
+    };
+
+    window.addEventListener("scroll", updateScroll);
+
+    // Appelle aussi une fois pour positionner au chargement
+    updateScroll();
+
+    return function cleanup() {
+      window.removeEventListener("scroll", updateScroll);
+    };
+  }
+}, []);
+
   return (
     <>
       <div
@@ -46,24 +53,24 @@ function ProfilePageHeader({ prestataire }) {
     objectFit: "cover",
     objectPosition: "center",
 
-  }} alt="..." src={`${prestataire.profil}`}></img>
+  }} alt="..." src={`http://localhost:3001/${user.profil}`}></img>
           </div>
-          <h3 className="title" style={{ fontSize: "1.9em" }}>{prestataire.prenom} {prestataire.nom}</h3>
-          <p className="category">{prestataire.description}</p>
-          {/* <div className="content">
+          <h3 className="title" style={{ fontSize: "1.9em" }}>{user.prenom} {user.nom}</h3>
+          {/* <p className="category">{user.description}</p> */}
+          <div className="content">
             <div className="social-description">
               <h2>26</h2>
-              <p>Comments</p>
+              <p>Avis</p>
             </div>
             <div className="social-description">
               <h2>26</h2>
-              <p>Comments</p>
+              <p>favoris</p>
             </div>
             <div className="social-description">
               <h2>48</h2>
-              <p>Bookmarks</p>
+              <p>vus</p>
             </div>
-          </div> */}
+          </div>
         </Container>
       </div>
     </>

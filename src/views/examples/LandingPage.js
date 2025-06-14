@@ -23,7 +23,7 @@ import {
 // core components
 import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
 import LandingPageHeader from "components/Headers/LandingPageHeader.js";
-import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
+// import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
 import DefaultFooter from "components/Footers/DefaultFooter.js";
 
 function LandingPage() {
@@ -32,6 +32,8 @@ function LandingPage() {
   const [firstFocus, setFirstFocus] = React.useState(false);
   const [lastFocus, setLastFocus] = React.useState(false);
  const [pills, setPills] = React.useState("1");
+ const [userId, setUserId] = useState(() => localStorage.getItem("userId"));
+ const [role, setRole] = useState(() => localStorage.getItem("role"));
 
   
   React.useEffect(() => {
@@ -62,14 +64,26 @@ function LandingPage() {
     };
   }, [id]);
 
+
+  const handleLogout = () => {
+    setUserId(null);
+    setRole(null);
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
+    localStorage.removeItem("token"); 
+  };
+
    if (!prestataire) {
     return <div style={{ textAlign: "center", marginTop: "100px" }}>Chargement...</div>;
   }
+  
+  
+  
   return (
     <>
-      <ExamplesNavbar />
+      <ExamplesNavbar userId={userId} role={role} onLogout={handleLogout} />
       <div className="wrapper">
-        <ProfilePageHeader
+        <LandingPageHeader
         prestataire={prestataire} 
          />
         <div className="section section-about-us">
@@ -117,23 +131,31 @@ function LandingPage() {
                     </p>
                   </div>
                  {prestataire.posts.length > 0 && (
-  <div
-    className="image-container"
-    style={{
-      backgroundImage: `url(${prestataire.posts[0].image || "/Profils/default.jpg"})`
-    }}
-  ></div>
+  <div 
+  className="image-container"
+  style={{
+    backgroundImage: `url(${
+      prestataire.posts && prestataire.posts[0]?.image
+        ? `http://localhost:3001/${prestataire.posts[0].image}`
+        : "/Profils/default.jpg"
+    })`
+  }}
+></div>
+
 )}
 
                 </Col>
                 <Col md="5">
-                  <div
-                    className="image-container image-right"
-                    style={{
-                      backgroundImage:
-                         `url(${prestataire.profil || "/Profils/default.jpg"})`
-                    }}
-                  ></div>
+               <div
+  className="image-container image-right"
+  style={{
+    backgroundImage: `url(${
+      prestataire.profil
+        ? `http://localhost:3001/${prestataire.profil}`
+        : "/Profils/default.jpg"
+    })`
+  }}
+></div>
                   <h3>
                    À propos
                   </h3>
@@ -158,126 +180,248 @@ function LandingPage() {
                 </Col>
               </Row>
             </div>
-            {prestataire.posts && prestataire.posts.length > 0 && (
-  <Row>
-    <Col className="ml-auto mr-auto" md="6">
-      <h4 className="title text-center">Mon portfolio</h4>
-      <div className="nav-align-center">
-        <Nav
-          className="nav-pills-info nav-pills-just-icons"
-          pills
-          role="tablist"
-        >
-          <NavItem>
-            <NavLink
-              className={pills === "1" ? "active" : ""}
-              href="#pablo"
-              onClick={(e) => {
-                e.preventDefault();
-                setPills("1");
-              }}
-            >
-              <i className="now-ui-icons design_image"></i>
-            </NavLink>
-          </NavItem>
-
-          {prestataire.posts.length > 4 && (
-            <NavItem>
-              <NavLink
-                className={pills === "2" ? "active" : ""}
-                href="#pablo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPills("2");
-                }}
-              >
-                <i className="now-ui-icons location_world"></i>
-              </NavLink>
-            </NavItem>
-          )}
-
-          {prestataire.posts.length > 8 && (
-            <NavItem>
-              <NavLink
-                className={pills === "3" ? "active" : ""}
-                href="#pablo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPills("3");
-                }}
-              >
-                <i className="now-ui-icons sport_user-run"></i>
-              </NavLink>
-            </NavItem>
-          )}
-        </Nav>
-      </div>
-    </Col>
-
-    <TabContent className="gallery" activeTab={"pills" + pills}>
-      {/* pills1 */}
-      <TabPane tabId="pills1">
-        <Col className="ml-auto mr-auto" md="10">
-          <Row className="collections">
-            {prestataire.posts.slice(0, 4).map((post, index) => (
-              <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
-                <img
-                  alt={post.description}
-                  className="img-raised"
-                  src={post.image || "/Profils/default.jpg"}
-                  style={{ width: "100%", height: "auto" }}
-                />
-                <p className="text-center mt-2">{post.description}</p>
+           {prestataire.posts && prestataire.posts.length > 0 && (
+            <Row>
+              <Col className="ml-auto mr-auto" md="6">
+                <h4 className="title text-center">Mon Portfolio</h4>
+                <div className="nav-align-center">
+                  <Nav className="nav-pills-info nav-pills-just-icons" pills role="tablist">
+                    {prestataire.posts.length> 0 && (
+                      <NavItem>
+                        <NavLink
+                          className={pills === "1" ? "active" : ""}
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPills("1");
+                          }}
+                        >
+                          <i className="now-ui-icons design_image"></i>
+                        </NavLink>
+                      </NavItem>
+                    )}
+                    {prestataire.posts.length> 4 && (
+                      <NavItem>
+                        <NavLink
+                          className={pills === "2" ? "active" : ""}
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPills("2");
+                          }}
+                        >
+                          <i className="now-ui-icons design_image"></i>
+                        </NavLink>
+                      </NavItem>
+                    )}
+                    {prestataire.posts.length> 8 && (
+                      <NavItem>
+                        <NavLink
+                          className={pills === "3" ? "active" : ""}
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setPills("3");
+                          }}
+                        >
+                          <i className="now-ui-icons design_image"></i>
+                        </NavLink>
+                      </NavItem>
+                    )}
+                  </Nav>
+                </div>
+            
+                <TabContent className="gallery" activeTab={`pills${pills}`}>
+                  <TabPane tabId="pills1">
+              <Row className="collections">
+                {
+                 prestataire.posts.slice(0, 4).map((post, idx) => (
+                    <Col md="6" key={idx}>
+                      <img
+                        alt="..."
+                        className="img-raised"
+                        src={`http://localhost:3001/${post.image}` || "/Profils/default.jpg"}
+                      />
+                      <p className="text-center">{post.description}</p>
+                    </Col>
+                  ))
+                
+                }
+              </Row>
+            </TabPane>
+            
+            
+                  {prestataire.posts.length > 4 && (
+                    <TabPane tabId="pills2">
+                      <Row className="collections">
+                        {prestataire.posts.slice(4, 8).map((post, idx) => (
+                          <Col md="6" key={idx}>
+                            <img
+                              alt="..."
+                              className="img-raised"
+                              src={`http://localhost:3001/${post.image}` || "/Profils/default.jpg"}
+                            />
+                            <p className="text-center">{post.description}</p>
+                          </Col>
+                        ))}
+                      </Row>
+                    </TabPane>
+                  )}
+            
+                  {prestataire.posts.length > 8 && (
+                    <TabPane tabId="pills3">
+                      <Row className="collections">
+                        {prestataire.posts.slice(8, 12).map((post, idx) => (
+                          <Col md="6" key={idx}>
+                            <img
+                              alt="..."
+                              className="img-raised"
+                              src={`http://localhost:3001/${post.image}` || "/Profils/default.jpg"}
+                            />
+                            <p className="text-center">{post.description}</p>
+                          </Col>
+                        ))}
+                      </Row>
+                    </TabPane>
+                  )}
+                </TabContent>
               </Col>
-            ))}
-          </Row>
-        </Col>
-      </TabPane>
-
-      {/* pills2 */}
-      {prestataire.posts.length > 4 && (
-        <TabPane tabId="pills2">
-          <Col className="ml-auto mr-auto" md="10">
-            <Row className="collections">
-              {prestataire.posts.slice(4, 8).map((post, index) => (
-                <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
-                  <img
-                    alt={post.description}
-                    className="img-raised"
-                    src={post.image || "/Profils/default.jpg"}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                  <p className="text-center mt-2">{post.description}</p>
-                </Col>
-              ))}
             </Row>
-          </Col>
-        </TabPane>
-      )}
+            
+            
+            
 
-      {/* pills3 */}
-      {prestataire.posts.length > 8 && (
-        <TabPane tabId="pills3">
-          <Col className="ml-auto mr-auto" md="10">
-            <Row className="collections">
-              {prestataire.posts.slice(8).map((post, index) => (
-                <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
-                  <img
-                    alt={post.description}
-                    className="img-raised"
-                    src={post.image || "/Profils/default.jpg"}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                  <p className="text-center mt-2">{post.description}</p>
-                </Col>
-              ))}
-            </Row>
-          </Col>
-        </TabPane>
-      )}
-    </TabContent>
-  </Row>
+            
+  // <Row>
+  //   <Col className="ml-auto mr-auto" md="6">
+  //     <h4 className="title text-center">Mon portfolio</h4>
+
+  //     <div className="nav-align-center">
+  //       <Nav className="nav-pills-info nav-pills-just-icons" pills role="tablist">
+  //         {prestataire.posts.length > 0 && (
+  //           <NavItem>
+  //             <NavLink
+  //               className={pills === "1" ? "active" : ""}
+  //               href="#"
+  //               onClick={(e) => {
+  //                 e.preventDefault();
+  //                 setPills("1");
+  //               }}
+  //             >
+  //               <i className="now-ui-icons design_image"></i>
+  //             </NavLink>
+  //           </NavItem>
+  //         )}
+
+  //         {prestataire.posts.length > 4 && (
+  //           <NavItem>
+  //             <NavLink
+  //               className={pills === "2" ? "active" : ""}
+  //               href="#"
+  //               onClick={(e) => {
+  //                 e.preventDefault();
+  //                 setPills("2");
+  //               }}
+  //             >
+  //               <i className="now-ui-icons location_world"></i>
+  //             </NavLink>
+  //           </NavItem>
+  //         )}
+
+  //         {prestataire.posts.length > 8 && (
+  //           <NavItem>
+  //             <NavLink
+  //               className={pills === "3" ? "active" : ""}
+  //               href="#"
+  //               onClick={(e) => {
+  //                 e.preventDefault();
+  //                 setPills("3");
+  //               }}
+  //             >
+  //               <i className="now-ui-icons sport_user-run"></i>
+  //             </NavLink>
+  //           </NavItem>
+  //         )}
+  //       </Nav>
+  //     </div>
+  //   </Col>
+
+  //   <TabContent className="gallery" activeTab={`pills${pills}`}>
+  //     {prestataire.posts.length > 0 && (
+  //       <TabPane tabId="pills1">
+  //         <Col className="ml-auto mr-auto" md="10">
+  //           <Row className="collections">
+  //             {prestataire.posts.slice(0, 4).map((post, index) => (
+  //               <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
+  //                 <img
+  //                   alt={post.description}
+  //                   className="img-raised"
+  //                   src={
+  //                     post.image
+  //                       ? `http://localhost:3001/${post.image}`
+  //                       : "/Profils/default.jpg"
+  //                   }
+  //                   style={{ width: "100%", height: "auto" }}
+  //                 />
+  //                 <p className="text-center mt-2">{post.description}</p>
+  //               </Col>
+  //             ))}
+  //           </Row>
+  //         </Col>
+  //       </TabPane>
+  //     )}
+
+  //     {prestataire.posts.length > 4 && (
+  //       <TabPane tabId="pills2">
+  //         <Col className="ml-auto mr-auto" md="10">
+  //           <Row className="collections">
+  //             {prestataire.posts.slice(4, 8).map((post, index) => (
+  //               <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
+  //                 <img
+  //                   alt={post.description}
+  //                   className="img-raised"
+  //                   src={
+  //                     post.image
+  //                       ? `http://localhost:3001/${post.image}`
+  //                       : "/Profils/default.jpg"
+  //                   }
+  //                   style={{ width: "100%", height: "auto" }}
+  //                 />
+  //                 <p className="text-center mt-2">{post.description}</p>
+  //               </Col>
+  //             ))}
+  //           </Row>
+  //         </Col>
+  //       </TabPane>
+  //     )}
+
+  //     {prestataire.posts.length > 8 && (
+  //       <TabPane tabId="pills3">
+  //         <Col className="ml-auto mr-auto" md="10">
+  //           <Row className="collections">
+  //             {prestataire.posts.slice(8).map((post, index) => (
+  //               <Col md="6" key={index} style={{ marginBottom: "1rem" }}>
+  //                 <img
+  //                   alt={post.description}
+  //                   className="img-raised"
+  //                   src={
+  //                     post.image
+  //                       ? `http://localhost:3001/${post.image}`
+  //                       : "/Profils/default.jpg"
+  //                   }
+  //                   style={{ width: "100%", height: "auto" }}
+  //                 />
+  //                 <p className="text-center mt-2">{post.description}</p>
+  //               </Col>
+  //             ))}
+  //           </Row>
+  //         </Col>
+  //       </TabPane>
+  //     )}
+  //   </TabContent>
+  // </Row>
 )}
+
 
           </Container>
         </div>

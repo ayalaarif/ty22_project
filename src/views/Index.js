@@ -94,14 +94,14 @@ const handleLogout = () => {
                 id={prest.id}
                 nom={prest.nom}
                 prenom={prest.prenom}
-                profil={prest.profil}
+                profil={`http://localhost:3001/${prest.profil}`}
                description={prest.description}
               />
 
             ))}
           </div>
 
-          <Carousel />
+         
           <div id="apropos">
             <NucleoIcons />
           </div>
@@ -111,9 +111,11 @@ const handleLogout = () => {
           <div id="fonctionnement">
             <Number />
           </div>
+            <Carousel />
           <div id="stats">
             <Typography />
           </div>
+         
           <div id="contact">
             <Download />
           </div>

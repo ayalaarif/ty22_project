@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // reactstrap components
 import {
@@ -23,7 +24,11 @@ import DefaultFooter from "components/Footers/DefaultFooter.js";
 function ProfilePage() {
   const [pills, setPills] = React.useState("1");
   const [userData, setUserData] = useState(null);
- 
+ const navigate = useNavigate();
+const [userId, setUserId] = useState(() => localStorage.getItem("userId"));
+const [role, setRole] = useState(() => localStorage.getItem("role"));
+
+
   React.useEffect(() => {
     const userId = localStorage.getItem("userId");
     if (userId) {
@@ -41,23 +46,45 @@ function ProfilePage() {
       document.body.classList.remove("sidebar-collapse");
     };
   }, []);
+  const handleLogout = () => {
+  setUserId(null);
+  setRole(null);
+  localStorage.removeItem("userId");
+  localStorage.removeItem("role");
+  localStorage.removeItem("token"); 
+   navigate("/index")
+};
 
   if (!userData) return <p>Chargement...</p>;
 
-  const { user, prestataire } = userData;
+  const { user, prestataire,posts } = userData;
   
   return (
     <>
-      <ExamplesNavbar />
+      <ExamplesNavbar userId={userId} role={role} onLogout={handleLogout}  />
       <div className="wrapper">
-        <ProfilePageHeader />
+        <ProfilePageHeader  user={user} />
         <div className="section">
           <Container>
             <div className="button-container">
-              <Button className="btn-round" color="info" size="lg">
-                Follow
+              <Button  onClick={() => navigate("/modifier-profil")} className="btn-round" color="info" size="lg">
+                Modifier Mon profile
               </Button>
-              <Button
+              {user.role === "professionnel" && prestataire && (
+               <Button  onClick={() => navigate("/ajouter-post")} className="btn-round" color="info" size="lg">
+                Ajouter un post    
+              </Button>
+              )}
+               {/* <Button className="btn-round" color="info" size="lg">
+                Messages
+              </Button>
+                <Button className="btn-round" color="info" size="lg">
+                Avis
+              </Button>
+               <Button className="btn-round" color="info" size="lg">
+                Favoris
+              </Button> */}
+              {/* <Button
                 className="btn-round btn-icon"
                 color="default"
                 id="tooltip515203352"
@@ -78,156 +105,166 @@ function ProfilePage() {
               </Button>
               <UncontrolledTooltip delay={0} target="tooltip340339231">
                 Follow me on Instagram
-              </UncontrolledTooltip>
+              </UncontrolledTooltip> */}
             </div>
+           
             <h3 className="title">About me</h3>
             <h5 className="description">
-              An artist of considerable range, Ryan — the name taken by
-              Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs
-              and records all of his own music, giving it a warm, intimate feel
-              with a solid groove structure. An artist of considerable range.
+            <p><strong>Email :</strong> {user.email}</p>
+            <p><strong>Rôle :</strong> {user.role}</p>
+              <p><strong>genre :</strong> {user.genre}</p>
+                <p><strong>date de naissance :</strong> {user.dateNaissance}</p>
+                <p><strong>telephone :</strong> {user.telephone}</p>
+                {user.role === "professionnel" && prestataire && (
+                   <>
+                 <p><strong>Adresse :</strong> {prestataire.adresse}</p>
+                <p><strong>ville :</strong> {prestataire.ville}</p>
+                <p><strong>codePostal :</strong> {prestataire.codePostal}</p>
+                <p><strong>pays :</strong> {prestataire.pays}</p>
+                 <p><strong>specialite :</strong> {prestataire.specialite}</p>
+                  <p><strong>description :</strong> {prestataire.description}</p>
+                    <p><strong>deuxieme description :</strong> {prestataire.description2}</p>
+                     <p><strong>tarifHoraire :</strong> {prestataire.tarifHoraire}</p>
+                      <p><strong>disponibilite :</strong> {prestataire.disponibilite}</p>
+                      <p><strong>siteWeb :</strong> {prestataire.siteWeb}</p>
+                   </> 
+                   )}
             </h5>
-            <Row>
-              <Col className="ml-auto mr-auto" md="6">
-                <h4 className="title text-center">My Portfolio</h4>
-                <div className="nav-align-center">
-                  <Nav
-                    className="nav-pills-info nav-pills-just-icons"
-                    pills
-                    role="tablist"
-                  >
-                    <NavItem>
-                      <NavLink
-                        className={pills === "1" ? "active" : ""}
-                        href="#pablo"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPills("1");
-                        }}
-                      >
-                        <i className="now-ui-icons design_image"></i>
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={pills === "2" ? "active" : ""}
-                        href="#pablo"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPills("2");
-                        }}
-                      >
-                        <i className="now-ui-icons location_world"></i>
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={pills === "3" ? "active" : ""}
-                        href="#pablo"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPills("3");
-                        }}
-                      >
-                        <i className="now-ui-icons sport_user-run"></i>
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
-                </div>
+            {user.role === "professionnel" && prestataire && posts && (
+              <>
+           <Row>
+  <Col className="ml-auto mr-auto" md="6">
+    <h4 className="title text-center">Mon Portfolio</h4>
+    <div className="nav-align-center">
+      <Nav className="nav-pills-info nav-pills-just-icons" pills role="tablist">
+        {posts.length > 0 && (
+          <NavItem>
+            <NavLink
+              className={pills === "1" ? "active" : ""}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setPills("1");
+              }}
+            >
+              <i className="now-ui-icons design_image"></i>
+            </NavLink>
+          </NavItem>
+        )}
+        {posts.length > 4 && (
+          <NavItem>
+            <NavLink
+              className={pills === "2" ? "active" : ""}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setPills("2");
+              }}
+            >
+              <i className="now-ui-icons design_image"></i>
+            </NavLink>
+          </NavItem>
+        )}
+        {posts.length > 8 && (
+          <NavItem>
+            <NavLink
+              className={pills === "3" ? "active" : ""}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setPills("3");
+              }}
+            >
+              <i className="now-ui-icons design_image"></i>
+            </NavLink>
+          </NavItem>
+        )}
+      </Nav>
+    </div>
+
+    <TabContent className="gallery" activeTab={`pills${pills}`}>
+      <TabPane tabId="pills1">
+  <Row className="collections">
+    {posts.length > 0 ? (
+      posts.slice(0, 4).map((post, idx) => (
+        <Col md="6" key={idx}>
+          <img
+  onClick={() => navigate(`/modifier-post/${post._id}`)}
+  alt={post.description}
+  className="img-raised"
+  src={post.image ? `http://localhost:3001/${post.image}` : "/Profils/default.jpg"}
+  style={{ width: "100%", height: "auto", cursor: "pointer" }}
+/>
+          <p className="text-center">{post.description}</p>
+        </Col>
+      ))
+    ) : (
+      <Col className="text-center" md="12">
+        {/* <p>Il n'y a pas encore de posts.</p>
+      
+        <Button
+          color="info"
+          onClick={() => window.location.href = "/ajouter-post"}
+        >
+          Ajouter un post
+        </Button> */}
+      
+         <br/>
+         <div className="button-container">
+            <p><strong>Il n'y a pas encore de posts.</strong></p>
+              <Button  onClick={() => navigate("/ajouter-post")} className="btn-round" color="info" size="lg">
+                Ajouter un post 
+              </Button>
+              </div>
+      </Col>
+    )}
+  </Row>
+</TabPane>
+
+
+      {posts.length > 4 && (
+        <TabPane tabId="pills2">
+          <Row className="collections">
+            {posts.slice(4, 8).map((post, idx) => (
+              <Col md="6" key={idx}>
+               <img
+  onClick={() => navigate(`/modifier-post/${post._id}`)}
+  alt={post.description}
+  className="img-raised"
+  src={post.image ? `http://localhost:3001/${post.image}` : "/Profils/default.jpg"}
+  style={{ width: "100%", height: "auto", cursor: "pointer" }}
+/>
+                <p className="text-center">{post.description}</p>
               </Col>
-              <TabContent className="gallery" activeTab={"pills" + pills}>
-                <TabPane tabId="pills1">
-                  <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg1.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg3.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
-                      </Col>
-                    </Row>
-                  </Col>
-                </TabPane>
-                <TabPane tabId="pills2">
-                  <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg6.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg11.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
-                      </Col>
-                    </Row>
-                  </Col>
-                </TabPane>
-                <TabPane tabId="pills3">
-                  <Col className="ml-auto mr-auto" md="10">
-                    <Row className="collections">
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg3.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg8.jpg")}
-                        ></img>
-                      </Col>
-                      <Col md="6">
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg7.jpg")}
-                        ></img>
-                        <img
-                          alt="..."
-                          className="img-raised"
-                          src={require("assets/img/bg6.jpg")}
-                        ></img>
-                      </Col>
-                    </Row>
-                  </Col>
-                </TabPane>
-              </TabContent>
-            </Row>
+            ))}
+          </Row>
+        </TabPane>
+      )}
+
+      {posts.length > 8 && (
+        <TabPane tabId="pills3">
+          <Row className="collections">
+            {posts.slice(8, 12).map((post, idx) => (
+              <Col md="6" key={idx}>
+                <img
+  onClick={() => navigate(`/modifier-post/${post._id}`)}
+  alt={post.description}
+  className="img-raised"
+  src={post.image ? `http://localhost:3001/${post.image}` : "/Profils/default.jpg"}
+  style={{ width: "100%", height: "auto", cursor: "pointer" }}
+/>
+                <p className="text-center">{post.description}</p>
+              </Col>
+            ))}
+          </Row>
+        </TabPane>
+      )}
+    </TabContent>
+  </Col>
+</Row>
+
+            </>
+             )}
           </Container>
         </div>
         <DefaultFooter />

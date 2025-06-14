@@ -22,7 +22,7 @@ const SearchBar = ({ onSearch }) => {
             <input
               id="search"
               type="text"
-              placeholder="What are you looking for?"
+              placeholder="Que recherchez vous ?"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)} // Met à jour la valeur de keyword
             />
@@ -38,7 +38,7 @@ const SearchBar = ({ onSearch }) => {
           </div>
           <div className="input-field third-wrap">
             <button className="btn-search" type="submit">
-              Search
+              rechercher
             </button>
           </div>
         </div>

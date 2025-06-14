@@ -73,7 +73,7 @@ function IndexHeader({ onSearch }) {
               className="n-logo"
               src={require("assets/img/now-logo.png")}
             />
-            <h3>Là où les pros se montrent et les clients trouvent.</h3>
+            <h3 style={{ fontSize: "2.3em" }}>Prenez RDV avec un artisan ou professionnel pour vos projets!</h3>
           </div>
 
           {/* Intégration du SearchBar juste après le logo et le slogan */}

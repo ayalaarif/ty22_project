@@ -17,7 +17,9 @@ import Index from "views/Index.js";
 import NucleoIcons from "views/NucleoIcons.js";
 
 import LoginPage from "views/examples/LoginPage.js";
-
+import ModifierProfil from "views/examples/ModifierProfil.js";
+import ModifierPost from "views/examples/ModifierPost.js";
+import AjouterPost from "views/examples/AjouterPost.js";
 import LandingPage from "views/examples/LandingPage.js";
 
 import ProfilePage from "views/examples/ProfilePage.js";
@@ -30,6 +32,9 @@ ReactDOM.render(
 <Route path="/nucleo-icons" element={<NucleoIcons />} />
 <Route path="/profilPrestataire/:id" element={<LandingPage />} />
 <Route path="/profile-page" element={<ProfilePage />} />
+<Route path="/modifier-profil" element={<ModifierProfil />} />
+<Route path="/modifier-post/:id" element={<ModifierPost />} />
+<Route path="/ajouter-post" element={<AjouterPost />} />
 <Route path="/login" element={<LoginPage />} />
 <Route path="/signup" element={<SignupPage />} />
 <Route path="*" element={<Navigate to="/index" replace />} />

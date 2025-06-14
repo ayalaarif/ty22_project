@@ -77,49 +77,61 @@ function IndexNavbar({ userId, role, onLogout }) {
               {/* Liens d'ancrage avec icônes */}
            
                 <NavItem>
-                <NavLink href="#apropos">
-                  <i className="now-ui-icons ui-2_chat-round"></i>
+                <NavLink style={{ fontSize: "0.8rem",fontWeight:"bold"}} href="#apropos">
+                  <i style={{ fontSize: "1rem", marginRight: "5px",fontWeight:"bold" }} className="now-ui-icons ui-2_chat-round"></i>
                   <p>À propos de nous</p>
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="#contact">
-                  <i className="now-ui-icons ui-1_email-85"></i>
+                <NavLink style={{ fontSize: "0.8rem",fontWeight:"bold"}} href="#contact">
+                  <i style={{ fontSize: "1rem", marginRight: "5px" ,fontWeight:"bold"}} className="now-ui-icons ui-1_email-85"></i>
                   <p>Nous contacter</p>
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="#bests">
-                  <i className="now-ui-icons ui-2_like"></i>
+                <NavLink  style={{ fontSize: "0.8rem",fontWeight:"bold"}} href="#bests">
+                  <i style={{ fontSize: "1rem", marginRight: "5px" ,fontWeight:"bold"}} className="now-ui-icons ui-2_like"></i>
                   <p>Nos meilleurs prestataires</p>
                 </NavLink>
               </NavItem>
 
               {/* Liens existants */}
               {userId ? (
+                <>
+                 <NavItem>
+                 <NavLink tag={Link} to="/profile-page" style={{ fontSize: "0.8rem",fontWeight:"bold"}}>
+                                                 <i className="now-ui-icons users_circle-08" style={{ fontSize: "1rem", marginRight: "5px",fontWeight:"bold" }}></i>
+                                                 <p>Mon compte</p>
+                                               </NavLink>
+
+                </NavItem>
+
                 <NavItem>
-                  <NavLink
+                  <NavLink style={{ fontSize: "0.8rem",fontWeight:"bold"}}
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
                       onLogout(); // Appelle la fonction de déconnexion
                     }}
                   >
-                    <i className="now-ui-icons ui-1_simple-remove"></i>
+                    <i style={{ fontSize: "1rem", marginRight: "5px",fontWeight:"bold" }} className="now-ui-icons ui-1_simple-remove"></i>
                     <p>Se déconnecter</p>
                   </NavLink>
-                </NavItem>
+                  </NavItem>
+                 
+                </>
+
               ) : (
                 <>
                      <NavItem>
-                 <NavLink tag={Link} to="/login" style={{ fontSize: "0.8rem"}}>
-                                                 <i className="now-ui-icons ui-1_lock-circle-open" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
+                 <NavLink tag={Link} to="/login" style={{ fontSize: "0.8rem",fontWeight:"bold"}}>
+                                                 <i className="now-ui-icons ui-1_lock-circle-open" style={{ fontSize: "1rem", marginRight: "5px",fontWeight:"bold" }}></i>
                                                  <p>Se connecter</p>
                                                </NavLink>
               </NavItem>
               <NavItem>
-                 <NavLink tag={Link} to="/signup" style={{ fontSize: "0.8rem"}}  >
-                                                  <i className="now-ui-icons ui-1_simple-add" style={{ fontSize: "1rem", marginRight: "5px" }}></i>
+                 <NavLink tag={Link} to="/signup" style={{ fontSize: "0.8rem",fontWeight:"bold"}}  >
+                                                  <i className="now-ui-icons ui-1_simple-add" style={{ fontSize: "1rem", marginRight: "5px" ,fontWeight:"bold"}}></i>
                                                   <p>S'inscrire</p>
                                                 </NavLink>
                                                 </NavItem>
