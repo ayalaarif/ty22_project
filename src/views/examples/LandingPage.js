@@ -1,6 +1,7 @@
 
 import React,{ useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // reactstrap components
 import {
@@ -17,7 +18,8 @@ import {
   Nav,
   TabContent,
   TabPane,
-   UncontrolledTooltip
+   UncontrolledTooltip,
+   Modal, ModalBody
 } from "reactstrap";
 
 // core components
@@ -34,6 +36,11 @@ function LandingPage() {
  const [pills, setPills] = React.useState("1");
  const [userId, setUserId] = useState(() => localStorage.getItem("userId"));
  const [role, setRole] = useState(() => localStorage.getItem("role"));
+const navigate = useNavigate();
+const [isFavoris, setIsFavoris] = useState(false);
+// const [tooltipText, setTooltipText] = useState("Ajouter ce professionnel aux favoris");
+const [modalFavoris, setModalFavoris] = useState(false);
+const [favorisMessage, setFavorisMessage] = useState("");
 
   
   React.useEffect(() => {
@@ -56,13 +63,41 @@ function LandingPage() {
       .catch((err) => console.error("Erreur de chargement du profil :", err));
 
 
+      if (userId && id) {
+    axios.get(`http://localhost:3001/api/favoris1/${userId}`)
+      .then(res => {
+        setIsFavoris(res.data.includes(id));
+      })
+      .catch(err => console.error("Erreur favoris:", err));
+  }
+
+  //     const fetchFavoris = async () => {
+  //   if (userId && id) {
+  //     try {
+  //       const res = await axios.get(`http://localhost:3001/api/favoris/${userId}`);
+  //       const favorisList = res.data.favoris || [];
+  //       const found = favorisList.includes(id);
+  //       setIsFavoris(found);
+  //       setTooltipText(
+  //         found ? "Ce professionnel est déjà dans vos favoris" : "Ajouter ce professionnel aux favoris"
+  //       );
+  //     } catch (err) {
+  //       console.error("Erreur en récupérant les favoris", err);
+  //     }
+  //   }
+  // };
+
+  // fetchFavoris();
+
+
 
     return function cleanup() {
        document.body.classList.remove("profile-page");
       document.body.classList.remove("landing-page");
       document.body.classList.remove("sidebar-collapse");
     };
-  }, [id]);
+     
+  }, [userId,id]);
 
 
   const handleLogout = () => {
@@ -73,9 +108,56 @@ function LandingPage() {
     localStorage.removeItem("token"); 
   };
 
+//   const handleAddFavoris = async () => {
+//   if (!userId) {
+//     navigate("/login");
+//     return;
+//   }
+
+//   try {
+//     await axios.post(`http://localhost:3001/api/favoris/${userId}/${id}`);
+//      setFavorisMessage("Professionnel ajouté aux favoris avec succès !");
+//     setModalFavoris(true);
+//     setIsFavoris(true);
+//     setTooltipText("Ce professionnel est déjà dans vos favoris");
+//   } catch (error) {
+//     console.error("Erreur lors de l'ajout aux favoris", error);
+//     setFavorisMessage("Une erreur est survenue. Veuillez réessayer.");
+//     setModalFavoris(true);
+//   }
+// };
+
+const handleToggleFavoris = async () => {
+  if (!userId) {
+    navigate("/login");
+    return;
+  }
+
+  try {
+    if (isFavoris) {
+      // 🔴 Supprimer des favoris
+      await axios.delete(`http://localhost:3001/api/favoris/${userId}/${id}`);
+      setFavorisMessage("Professionnel retiré des favoris.");
+    } else {
+      // 🟢 Ajouter aux favoris
+      await axios.post(`http://localhost:3001/api/favoris/${userId}/${id}`);
+      setFavorisMessage("Professionnel ajouté aux favoris.");
+    }
+
+    setIsFavoris(!isFavoris);
+    setModalFavoris(true);
+  } catch (error) {
+    console.error("Erreur:", error);
+    setFavorisMessage("Une erreur est survenue.");
+    setModalFavoris(true);
+  }
+};
+
+
    if (!prestataire) {
     return <div style={{ textAlign: "center", marginTop: "100px" }}>Chargement...</div>;
   }
+  
   
   
   
@@ -92,18 +174,58 @@ function LandingPage() {
                                   <Button className="btn-round" color="info" size="lg"  style={{ fontSize: "1rem", padding: "14px 28px" }}>
                                     Donner un avis 
                                   </Button>
-                                  <Button
-                                    className="btn-round btn-icon"
-                                    color="default"
-                                    id="tooltip515203352"
-                                    size="lg"
-                                  >
-                                    {/* <i className="fab fa-twitter" ></i> */}
-                                     <i className="now-ui-icons ui-2_favourite-28"></i>
-                                  </Button>
-                                  <UncontrolledTooltip delay={0} target="tooltip515203352">
-                                    Ajouter ce professionnel aux favoris 
-                                  </UncontrolledTooltip>
+                                  {/* <Button
+  className="btn-round btn-icon"
+  
+  id="tooltip515203352"
+  size="lg"
+  onClick={handleAddFavoris}
+>
+  <i className="now-ui-icons ui-2_favourite-28" style={{ color: isFavoris ? "white" : "#6c757d" }}></i>
+</Button>
+<UncontrolledTooltip delay={0} target="tooltip515203352">
+  {tooltipText}
+</UncontrolledTooltip> */}
+{/* <Button
+style={{ color: isFavoris ? "white" : "#6c757d" }}
+color="danger"
+  className="btn-round btn-icon"
+  size="lg"
+  onClick={handleToggleFavoris}
+  id="btn-favoris"
+>
+  <i className="now-ui-icons ui-2_favourite-28" style={{ color: isFavoris ? "#6c757d" : "white" }}></i>
+</Button>
+<UncontrolledTooltip delay={0} target="btn-favoris">
+  {isFavoris ? "Retirer ce professionnel des favoris" : "Ajouter ce professionnel aux favoris"}
+</UncontrolledTooltip> */}
+
+{role !== "professionnel" && (
+    <>
+<Button
+  className="btn-round btn-icon"
+  size="lg"
+  onClick={handleToggleFavoris}
+  id="btn-favoris"
+  style={{
+    backgroundColor: isFavoris ? "white" : "#6c757d",
+     border: "1px solid",
+    borderColor:  "#6c757d" ,
+  }}
+>
+  <i
+    className="now-ui-icons ui-2_favourite-28"
+    style={{
+      color: isFavoris ? "#6c757d" : "white",
+     
+    }}
+  ></i>
+</Button>
+<UncontrolledTooltip delay={0} target="btn-favoris">
+  {isFavoris ? "Retirer ce professionnel des favoris" : "Ajouter ce professionnel aux favoris"}
+</UncontrolledTooltip>
+</>
+)}
                                   
                       </div>
             <Row>
@@ -627,6 +749,27 @@ function LandingPage() {
         </div>
         <DefaultFooter />
       </div>
+      <Modal isOpen={modalFavoris} toggle={() => setModalFavoris(false)}>
+  <div className="modal-header justify-content-center">
+    <button
+      className="close"
+      type="button"
+      onClick={() => setModalFavoris(false)}
+    >
+      <i className="now-ui-icons ui-1_simple-remove"></i>
+    </button>
+    <h4 className="title title-up">Favoris</h4>
+  </div>
+  <ModalBody>
+    <p className="text-center">{favorisMessage}</p>
+  </ModalBody>
+  <div className="modal-footer">
+    <Button color="primary" onClick={() => setModalFavoris(false)}>
+      OK
+    </Button>
+  </div>
+</Modal>
+
     </>
   );
 }

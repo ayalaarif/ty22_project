@@ -35,6 +35,7 @@ const [role, setRole] = useState(() => localStorage.getItem("role"));
       axios.get(`http://localhost:3001/api/user/${userId}`)
         .then((res) => setUserData(res.data))
         .catch((err) => console.error(err));
+        
     }
     document.body.classList.add("profile-page");
     document.body.classList.add("sidebar-collapse");
@@ -46,6 +47,7 @@ const [role, setRole] = useState(() => localStorage.getItem("role"));
       document.body.classList.remove("sidebar-collapse");
     };
   }, []);
+
   const handleLogout = () => {
   setUserId(null);
   setRole(null);
@@ -58,7 +60,7 @@ const [role, setRole] = useState(() => localStorage.getItem("role"));
   if (!userData) return <p>Chargement...</p>;
 
   const { user, prestataire,posts } = userData;
-  
+  console.log(user);
   return (
     <>
       <ExamplesNavbar userId={userId} role={role} onLogout={handleLogout}  />
@@ -70,7 +72,7 @@ const [role, setRole] = useState(() => localStorage.getItem("role"));
               <Button  onClick={() => navigate("/modifier-profil")} className="btn-round" color="info" size="lg">
                 Modifier Mon profile
               </Button>
-              {user.role === "professionnel" && prestataire && (
+              {user.role === "professionnel"  && (
                <Button  onClick={() => navigate("/ajouter-post")} className="btn-round" color="info" size="lg">
                 Ajouter un post    
               </Button>
@@ -130,7 +132,7 @@ const [role, setRole] = useState(() => localStorage.getItem("role"));
                    </> 
                    )}
             </h5>
-            {user.role === "professionnel" && prestataire && posts && (
+            {user.role === "professionnel" && posts && (
               <>
            <Row>
   <Col className="ml-auto mr-auto" md="6">

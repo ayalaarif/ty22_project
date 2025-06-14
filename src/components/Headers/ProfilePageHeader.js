@@ -1,14 +1,19 @@
-import React from "react";
 
+import React,{ useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
+import axios from "axios";
 
 // core components
 
 function ProfilePageHeader({ user }) {
  let pageHeader = React.createRef();
+ const [favorisCount, setFavorisCount] = useState(0);
+ const navigate = useNavigate();
 
 React.useEffect(() => {
+  
   if (window.innerWidth > 991) {
     const updateScroll = () => {
       if (pageHeader.current) {
@@ -19,15 +24,29 @@ React.useEffect(() => {
     };
 
     window.addEventListener("scroll", updateScroll);
-
+    if (user._id) {
+    axios.get(`http://localhost:3001/api/favoris/count/${user._id}`)
+      .then((res) => {
+        setFavorisCount(res.data.count);
+        console.log("data",res.data.count);
+        
+      })
+      .catch((err) => console.error(err));
+  }
+    
     // Appelle aussi une fois pour positionner au chargement
     updateScroll();
+    
 
     return function cleanup() {
       window.removeEventListener("scroll", updateScroll);
     };
   }
-}, []);
+  
+}, [user._id]);
+console.log("count",favorisCount);
+console.log("userID",user._id);
+
 
   return (
     <>
@@ -62,8 +81,12 @@ React.useEffect(() => {
               <h2>26</h2>
               <p>Avis</p>
             </div>
-            <div className="social-description">
-              <h2>26</h2>
+            <div className="social-description" style={{ cursor: user.role === "client" ? "pointer" : "default" }}
+     onClick={() => {
+       if (user.role === "client") {
+         navigate(`/mes-favoris`);
+       }}}>
+              <h2>{favorisCount}</h2>
               <p>favoris</p>
             </div>
             <div className="social-description">

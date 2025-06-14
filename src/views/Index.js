@@ -24,6 +24,7 @@ function Index() {
     document.body.classList.add("sidebar-collapse");
     document.documentElement.classList.remove("nav-open");
     window.scrollTo(0, 0);
+    
     return () => {
       document.body.classList.remove("index-page");
       document.body.classList.remove("sidebar-collapse");

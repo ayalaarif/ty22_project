@@ -21,6 +21,7 @@ import ModifierProfil from "views/examples/ModifierProfil.js";
 import ModifierPost from "views/examples/ModifierPost.js";
 import AjouterPost from "views/examples/AjouterPost.js";
 import LandingPage from "views/examples/LandingPage.js";
+import MesFavoris from "views/examples/MesFavoris.js";
 
 import ProfilePage from "views/examples/ProfilePage.js";
 import SignupPage from "views/examples/SignupPage";
@@ -37,6 +38,7 @@ ReactDOM.render(
 <Route path="/ajouter-post" element={<AjouterPost />} />
 <Route path="/login" element={<LoginPage />} />
 <Route path="/signup" element={<SignupPage />} />
+<Route path="/mes-favoris" element={<MesFavoris />} />
 <Route path="*" element={<Navigate to="/index" replace />} />
 </Routes>
 </BrowserRouter>,
