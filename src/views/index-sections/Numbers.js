@@ -1,8 +1,22 @@
-// Number.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "reactstrap";
+import axios from "axios";
 
-const Number = ({ totalPrestataires = 0, totalSpecialites = 0 }) => {
+const Number = () => {
+  const [totalPrestataires, setTotalPrestataires] = useState(0);
+  const [totalSpecialites, setTotalSpecialites] = useState(0);
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/api/stats")
+      .then((res) => {
+        setTotalPrestataires(res.data.professionnelsCount);
+        setTotalSpecialites(res.data.specialiteCount);
+      })
+      .catch((err) => {
+        console.error("Erreur lors du chargement des statistiques :", err);
+      });
+  }, []);
+
   return (
     <div className="section text-center">
       <Container>

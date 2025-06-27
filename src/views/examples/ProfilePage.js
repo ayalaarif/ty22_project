@@ -72,42 +72,14 @@ const [role, setRole] = useState(() => localStorage.getItem("role"));
               <Button  onClick={() => navigate("/modifier-profil")} className="btn-round" color="info" size="lg">
                 Modifier Mon profile
               </Button>
+              <Button  onClick={() => navigate("/messages")} className="btn-round" color="info" size="lg">
+                Voir mes discussions
+              </Button>
               {user.role === "professionnel"  && (
                <Button  onClick={() => navigate("/ajouter-post")} className="btn-round" color="info" size="lg">
                 Ajouter un post    
               </Button>
               )}
-               {/* <Button className="btn-round" color="info" size="lg">
-                Messages
-              </Button>
-                <Button className="btn-round" color="info" size="lg">
-                Avis
-              </Button>
-               <Button className="btn-round" color="info" size="lg">
-                Favoris
-              </Button> */}
-              {/* <Button
-                className="btn-round btn-icon"
-                color="default"
-                id="tooltip515203352"
-                size="lg"
-              >
-                <i className="fab fa-twitter"></i>
-              </Button>
-              <UncontrolledTooltip delay={0} target="tooltip515203352">
-                Follow me on Twitter
-              </UncontrolledTooltip>
-              <Button
-                className="btn-round btn-icon"
-                color="default"
-                id="tooltip340339231"
-                size="lg"
-              >
-                <i className="fab fa-instagram"></i>
-              </Button>
-              <UncontrolledTooltip delay={0} target="tooltip340339231">
-                Follow me on Instagram
-              </UncontrolledTooltip> */}
             </div>
            
             <h3 className="title">About me</h3>
@@ -202,15 +174,6 @@ const [role, setRole] = useState(() => localStorage.getItem("role"));
       ))
     ) : (
       <Col className="text-center" md="12">
-        {/* <p>Il n'y a pas encore de posts.</p>
-      
-        <Button
-          color="info"
-          onClick={() => window.location.href = "/ajouter-post"}
-        >
-          Ajouter un post
-        </Button> */}
-      
          <br/>
          <div className="button-container">
             <p><strong>Il n'y a pas encore de posts.</strong></p>
